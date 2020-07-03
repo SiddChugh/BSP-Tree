@@ -1,6 +1,6 @@
 /**
-	* This file implements a Bounding Volume Tree.
-	*/
+  * This file implements a Bounding Volume Tree.
+  */
 
 #include <array>
 #include <limits>

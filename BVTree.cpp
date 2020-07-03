@@ -1,6 +1,6 @@
 // This file contains implementations of the functions in BVTreeQuestion.h.
 
-#include "BVTreeQuestion.h"
+#include "BVTree.h"
 
 #include <cassert>
 #include <iostream>
@@ -78,62 +78,62 @@ BVTreeNode makeBVTree(std::vector<Vec3d> points, const int maxPointsInLeaf)
 
 double distanceCalcIn3DSpace(const Vec3d first, const Vec3d second)
 {
-	return std::sqrt(
-									 std::pow(((double)second[0] - double(first[0])), 2.0d) 
-																							 +
-									 std::pow((double(second[1]) - double(first[1])), 2.0d) 
-									 														 +
-									 std::pow((double(second[2]) - double(first[2])), 2.0d) 
-									 );
+  return std::sqrt(
+                   std::pow(((double)second[0] - double(first[0])), 2.0d) 
+                                               +
+                   std::pow((double(second[1]) - double(first[1])), 2.0d) 
+                                               +
+                   std::pow((double(second[2]) - double(first[2])), 2.0d) 
+                   );
 }
 
 Vec3d nearestPoint(const BVTreeNode & root, const Vec3d & queryPoint)
-{	
-	// Coordinate to be returned
-	static Vec3d nearestCoordinates;	
-	
-	// Height of tree > 1
-	if (root.children().size() == 1)
-	{
-		// No need to compare volumes. Node has only one child.
-		nearestPoint(root.children()[0], queryPoint);
-	} else if (root.children().size() > 1)
-	{
-		// Initializing the  iterative variables equal to the first child
-		BVTreeNode iter = root.children()[0];
-		
-		// Divide and Conquer Strategy
-		if (root.children()[0].distanceToVolumeSq(queryPoint) 
-												>
-				root.children()[1].distanceToVolumeSq(queryPoint))
-		{
-			iter = root.children()[1];			
-		}
-		// Go one level down the BVH tree.
-		nearestPoint(iter, queryPoint);
-	}	else 
-	{	
-		// Stop Iterating through the tree
-		// The current node is the leaf node that should contain the point
-		// closest to the queryPoint
+{ 
+  // Coordinate to be returned
+  static Vec3d nearestCoordinates;  
+  
+  // Height of tree > 1
+  if (root.children().size() == 1)
+  {
+    // No need to compare volumes. Node has only one child.
+    nearestPoint(root.children()[0], queryPoint);
+  } else if (root.children().size() > 1)
+  {
+    // Initializing the  iterative variables equal to the first child
+    BVTreeNode iter = root.children()[0];
+    
+    // Divide and Conquer Strategy
+    if (root.children()[0].distanceToVolumeSq(queryPoint) 
+                        >
+        root.children()[1].distanceToVolumeSq(queryPoint))
+    {
+      iter = root.children()[1];      
+    }
+    // Go one level down the BVH tree.
+    nearestPoint(iter, queryPoint);
+  } else 
+  { 
+    // Stop Iterating through the tree
+    // The current node is the leaf node that should contain the point
+    // closest to the queryPoint
 
-		// Initializing the shortest distance to the query point equal to 
-		// the first point contained inside the node
-		double shortestDistance = distanceCalcIn3DSpace(root.points()[0], 
-																										queryPoint);
-		nearestCoordinates = root.points()[0];
+    // Initializing the shortest distance to the query point equal to 
+    // the first point contained inside the node
+    double shortestDistance = distanceCalcIn3DSpace(root.points()[0], 
+                                                    queryPoint);
+    nearestCoordinates = root.points()[0];
 
-		for(int points_index = 1; points_index < root.points().size(); 
-																						 ++points_index)
-		{
-			if (shortestDistance > distanceCalcIn3DSpace(root.points()
-														 [points_index], queryPoint))
-			{
-				shortestDistance = distanceCalcIn3DSpace(root.points()
-							 						 [points_index], queryPoint);
-				nearestCoordinates = root.points()[points_index];
-			}
-		}
-	}
-	return nearestCoordinates;
+    for(int points_index = 1; points_index < root.points().size(); 
+                                             ++points_index)
+    {
+      if (shortestDistance > distanceCalcIn3DSpace(root.points()
+                             [points_index], queryPoint))
+      {
+        shortestDistance = distanceCalcIn3DSpace(root.points()
+                           [points_index], queryPoint);
+        nearestCoordinates = root.points()[points_index];
+      }
+    }
+  }
+  return nearestCoordinates;
 }
