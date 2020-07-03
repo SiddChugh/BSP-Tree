@@ -1,4 +1,3 @@
-# C++ Demo Code:
 This demo project implements a Binary Space Partitioning Tree (*https://en.wikipedia.org/wiki/Binary_space_partitioning*) and several helper functions to query the nearest point in the tree.
 The goal of the project was to implement the function *nearestPoint* and write unit tests and a Makefile for testing and compilation purposes.
 
